@@ -1,0 +1,1 @@
+# PathKit — URL path token classifier (stdlib only, zero deps)
