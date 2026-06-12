@@ -55,6 +55,16 @@ python main.py classify
 | `python main.py stats` | Dataset shape: length, encoding, dash/dot/pure-digit ratios |
 | `python -m unittest tests.test_slugs -v` | 18 integration tests |
 
+## Results
+
+### Dataset Stats
+
+![Stats](assets/result-stats.png)
+
+### Detector Scan
+
+![Scan](assets/result-scanning.png)
+
 ## Models
 
 | Package | Detects | Score > 0.5 -> Class |
