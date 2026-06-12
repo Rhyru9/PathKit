@@ -1,6 +1,8 @@
 # PathKit
 
-URL Path Token Classifier — separates content slugs from system artifacts in web path data.
+URL path token classifier — identifies whether a web path is a content slug, API endpoint, asset, search query, random ID, file, or encoded data.
+
+Two layers: rule-based detectors for known patterns (UUID, timestamp, hash, base64, routing codes) + ML logistic classifier for the rest. Zero dependencies.
 
 See [flow-system.md](flow-system.md) for full architecture and decision tree.
 
