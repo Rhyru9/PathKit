@@ -96,8 +96,8 @@ Evaluation protocol:
   retraining script reports the separate 500-row held-out evaluation.
 - Results must include support counts and confidence intervals; a class with
   zero support cannot support a performance claim.
-- Current reproduction is descriptive only: accuracy `0.9780`, macro-F1
-  `0.9072`; search recall is `0.3333`, and API has zero held-out support.
+- Current reproduction is descriptive only: accuracy `0.9860`, macro-F1
+  `0.9924`; search recall is `1.0000`, and API has zero held-out support.
 
 ---
 
@@ -141,21 +141,27 @@ PathKit does **not** claim:
 The initial benchmark is implemented in `eval/baselines.py` and evaluates
 majority, rule-only, ML-only, and hybrid variants on the same 500-row
 development-held-out split. With the canonical production labeling and
-decoding protocol, the hybrid system reaches accuracy `0.9760` and macro-F1
-`0.9064`, versus `0.5640` / `0.6828` for rule-only, `0.7060` / `0.4108` for
+decoding protocol, the hybrid system reaches accuracy `0.9860` and macro-F1
+`0.9924`, versus `0.5720` / `0.7669` for rule-only, `0.7160` / `0.5460` for
 ML-only, and `0.3440` / `0.0853` for majority. The key evidence is per-class:
 rule-only scores `0.0` F1 on slug (cannot read content) while ML-only scores
 `0.0` F1 on asset/encoded/random_id (cannot detect identifiers); only the
 hybrid scores high on both. These results are not final paper evidence: the
 split is heuristic-assisted, single-annotator, and has zero API support.
 
+The additional TF-IDF/logistic and decision-tree baselines in
+`eval/supervised_baselines.py` reach accuracy/macro-F1 of `0.7200`/`0.5647`
+and `0.5760`/`0.5624`, respectively. They use the same weakly labeled
+training pool and development-held-out split, so they are comparative
+development evidence rather than independently supervised final results.
+
 ## 9. Initial ablation result
 
 `eval/ablations.py` reuses the canonical decision flow and evaluates detector
 removals on the same development-held-out split. The full hybrid reaches
-accuracy `0.9780` and macro-F1 `0.9072`; removing the `other` detector reduces
-accuracy to `0.7180` and macro-F1 to `0.6629`, while removing the routing
-encoding detector reduces macro-F1 to `0.7393`. Removing UUID, timestamp, or
+accuracy `0.9860` and macro-F1 `0.9924`; removing the `other` detector reduces
+accuracy to `0.7260` and macro-F1 to `0.7474`, while removing the routing
+encoding detector reduces macro-F1 to `0.8244`. Removing UUID, timestamp, or
 hash/Base64 stages produces no change on this split because those token types
 are inadequately represented. These are descriptive development results, not
 causal or final-paper estimates; the ablation must be repeated on a clean,

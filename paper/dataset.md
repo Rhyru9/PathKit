@@ -111,7 +111,7 @@ Current protocol (see `scripts/retrain_eval.py`):
 | Split | Size | Content | Label |
 |---|---|---|---|
 | **Train pool** | 22,083 | `paths.txt` minus held-out | weak labels where available |
-| **Auto-labeled training rows** | 16,418 | subset of train pool | heuristic |
+| **Auto-labeled training rows** | 16,581 | subset of train pool | heuristic |
 | **Held-out test** | 500 | `sample_labeled.csv` | heuristic-assisted review (1 annotator) |
 
 **Rules (label-leakage prevention):**

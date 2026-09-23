@@ -33,15 +33,15 @@ arXiv paper and an archival code/data release.
 ### Reproduced current results (500 held-out rows)
 
 ```
-Accuracy:  0.9780
-Macro F1:  0.9072
+Accuracy:  0.9860
+Macro F1:  0.9924
 ```
 
 | Class | F1 |
 |---|---|
 | asset | 1.00 |
 | encoded | 1.00 |
-| search | 0.50 |
+| search | 1.00 |
 | random_id | 0.99 |
 | slug | 0.9857 |
 | file | 0.9716 |
@@ -56,7 +56,8 @@ zero held-out examples, so no claim about API performance is currently valid.
   only 1 annotator (need a second annotator and agreement measurement).
 - Dataset is 22,583 paths / 447,266 endpoints; provenance is documented in
   `paper/dataset.md`. Stale 230,200 references removed.
-- Search recall is weak (0.3333) and must be addressed before publication.
+- Search recall is 1.0000 on the development-held-out split after fixing
+  percent-encoded query decoding; clean-test confirmation is still required.
 - No held-out `api` examples — API performance is unmeasured, not claimed.
 
 ---
@@ -113,7 +114,8 @@ zero held-out examples, so no claim about API performance is currently valid.
   - Note: the old 500 (`sample_labeled.csv`) remains development-held-out only.
 - [x] **Preventing heuristic label leakage** *(done)*
   - [x] Current development-held-out set excluded from training -> `scripts/retrain_eval.py`
-        (trains on 16,418 auto-labeled, evaluates on 500 held-out)
+        (trains on 16,581 auto-labeled, evaluates on 500 held-out after the
+        query-decoding fix)
 
 ## 3. Evaluation and scientific validation
 
@@ -127,15 +129,15 @@ zero held-out examples, so no claim about API performance is currently valid.
 - [x] **Establishing initial baseline comparisons** *(implemented; clean test pending)*
   - majority, rule-only, ML-only, and hybrid on identical 500-row split
   - `eval/baselines.py` uses the canonical production labeling/decoding path
-  - Current result: hybrid accuracy `0.9780`, macro-F1 `0.9072`; API remains
+  - Current result: hybrid accuracy `0.9860`, macro-F1 `0.9924`; API remains
     unsupported because the held-out set has zero API examples
-  - [ ] Add TF-IDF/logistic and tree-based independently supervised baselines
-    after a clean ground-truth split exists
+  - [x] Add TF-IDF/logistic and tree-based supervised baselines
+        -> `eval/supervised_baselines.py` (development split only)
 - [x] **Running initial detector ablation study** *(implemented; clean test pending)*
   - `eval/ablations.py` measures full hybrid, detector removals, rule-only,
     and ML-only on the identical development-held-out split.
-  - Full hybrid: accuracy `0.9780`, macro-F1 `0.9072`; removing `other` drops
-    accuracy to `0.7180`, while removing encoding drops macro-F1 to `0.7393`.
+  - Full hybrid: accuracy `0.9860`, macro-F1 `0.9924`; removing `other` drops
+    accuracy to `0.7260`, while removing encoding drops macro-F1 to `0.8244`.
   - UUID/timestamp/hash/Base64 deltas are zero on this split because coverage
     is inadequate; this is not evidence those detectors are unnecessary.
   - [ ] Repeat on an independently annotated test set with adequate detector

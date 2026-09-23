@@ -2,7 +2,7 @@
 error_analysis.py — Structured error analysis of the hybrid pipeline.
 
 Categorizes false positives / false negatives per class, identifies why
-`search` recall is low, confirms `api` has zero support, quantifies class
+`search` recall and confirms `api` support, quantifies class
 imbalance, and flags the numeric-slug-vs-random-id ambiguity.
 
 Usage:
@@ -96,7 +96,7 @@ def main() -> int:
     n_search_fp = fn["search"]
     print(f"  search: {n_search} true, {n_search_fp} missed "
           f"(recall {1 - n_search_fp/max(n_search,1):.0%}) — "
-          f"only literal ?= is caught, percent-encoded queries are missed")
+          f"query detection is evaluated after safe decoding")
     n_api = dist["api"]
     print(f"  api: {n_api} true examples -> support is ZERO; no API claim possible")
     other_caught = sum(1 for _, _, _, det in errors if det == "other")

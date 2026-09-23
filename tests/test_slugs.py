@@ -164,6 +164,10 @@ class TestDetectors(unittest.TestCase):
 
     def test_decode_preserves_query_values(self):
         self.assertEqual(decode("/search?page=20"), "/search?page=20")
+        self.assertEqual(
+            decode("tabs.php%3Fnpsn%3D10800463"),
+            "tabs.php?npsn=10800463",
+        )
 
     def test_decode_supports_utf8(self):
         self.assertEqual(decode("caf%C3%A9"), "café")
