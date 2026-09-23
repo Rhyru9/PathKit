@@ -6,7 +6,7 @@ arXiv paper and an archival code/data release.
 
 ---
 
-## Progress Snapshot (updated 2026-06-13)
+## Progress Snapshot (updated 2026-09-23)
 
 > This section is the live status. Checkboxes below are the canonical tracker.
 
@@ -26,45 +26,50 @@ arXiv paper and an archival code/data release.
 | Annotation guidelines | done | `data/annotate/guidelines.md` |
 | Sample generator (seeded) | done | `scripts/sample_annotate.py` |
 | Auto-labeling + manual overrides | done | `scripts/label_annotate.py` |
-| Ground-truth (500 labeled) | done | `data/annotate/sample_labeled.csv` |
+| Held-out annotation sample (500 labeled) | in progress | `data/annotate/sample_labeled.csv` |
 | Evaluation harness (P/R/F1/confusion/abstention) | done | `eval/harness.py` |
 | Retrain + held-out eval (no leakage) | done | `scripts/retrain_eval.py` |
 
-### Current results (500 held-out ground-truth)
+### Reproduced current results (500 held-out rows)
 
 ```
-Accuracy:  0.984
-Macro F1:  0.99
+Accuracy:  0.9780
+Macro F1:  0.9072
 ```
 
 | Class | F1 |
 |---|---|
 | asset | 1.00 |
 | encoded | 1.00 |
-| search | 1.00 |
+| search | 0.50 |
 | random_id | 0.99 |
-| slug | 0.99 |
-| file | 0.98 |
+| slug | 0.9857 |
+| file | 0.9716 |
 
-Progression: stale model 0.33 → retrained 0.65 → +detector gaps 0.78 →
-+asset fix 0.85 → +file/asset rules 0.96 → +encoding layer 0.97 →
-+num_dash rule **0.98**.
+These are descriptive results, not final paper evidence: the sample is
+single-annotator and several classes are underrepresented. The `api` class has
+zero held-out examples, so no claim about API performance is currently valid.
 
 ### Known remaining issues
 
-- 6 slugs still misclassified as `file` (~3% of slugs).
-- Ground truth has only 1 annotator (need 2nd for inter-annotator agreement).
+- Ground truth labels were produced with heuristic assistance and reviewed by
+  only 1 annotator (need a second annotator and agreement measurement).
 - Dataset shrank to 22,583 paths; docs still reference 230,200 (stale).
+- Search recall is weak (0.3333) and must be addressed before publication.
 
 ---
 
 ## 1. Research direction
 
-- [ ] **Defining the novel research contribution** *(not started)*
-  - Formulate a precise claim that differentiates PathKit from regex-only
-    endpoint parsing and generic URL classification.
-  - Define research questions, hypotheses, intended users, and measurable
-    success criteria.
+- [x] **Defining the novel research contribution** *(done)*
+  - [x] Main claim: hybrid framework (structure detectors + layered decoding
+        + linguistic classifier) for 7-class URL path intent
+        -> `paper/contributions.md`
+  - [x] 3 research questions (accuracy, encoding, detector contribution)
+  - [x] 4 testable hypotheses (H1-H4)
+  - [x] 7-class taxonomy + decision priority
+  - [x] Success metrics (macro-F1 primary, per-class, abstention)
+  - [x] Claim boundaries (5 anti-overclaim statements)
 - [ ] **Surveying related work and prior art** *(not started)*
   - Review URL classification, web crawling, endpoint discovery, semantic URL
     analysis, identifier detection, and security reconnaissance.
@@ -76,23 +81,25 @@ Progression: stale model 0.33 → retrained 0.65 → +detector gaps 0.78 →
   - Document sources, collection dates, licenses, normalization, deduplication,
     language distribution, and domain split.
   - Add versioned manifests and publish only sanitized, permitted data.
-- [x] **Creating a human-verified ground-truth set** *(in progress)*
+- [ ] **Creating a human-verified ground-truth set** *(in progress)*
   - [x] Define annotation rules (slug/api/asset/search/random_id/file/encoded)
         -> `data/annotate/guidelines.md`
   - [x] Sample generator with fixed seed -> `scripts/sample_annotate.py`
-  - [x] 500 paths labeled -> `data/annotate/sample_labeled.csv`
+  - [x] 500 paths labeled with first-pass review -> `data/annotate/sample_labeled.csv`
   - [ ] Add a 2nd annotator + measure inter-annotator agreement
   - [ ] Freeze the test set (never used for training)
 - [x] **Preventing heuristic label leakage** *(done)*
   - [x] Held-out set excluded from training -> `scripts/retrain_eval.py`
-        (trains on 22,083 auto-labeled, evaluates on 500 held-out)
+        (trains on 16,418 auto-labeled, evaluates on 500 held-out)
 
 ## 3. Evaluation and scientific validation
 
-- [x] **Building a rigorous evaluation harness** *(done)*
+- [x] **Building a rigorous evaluation harness** *(implemented; validation pending)*
   - [x] Deterministic train/val/eval with fixed seed -> `eval/harness.py`
   - [x] Accuracy, per-class precision/recall/F1, macro/micro, confusion matrix,
         abstention -> `eval/harness.py`
+  - [x] Canonical classifier shared by CLI and evaluation -> `models/decision.py`
+  - [x] URL/query-safe UTF-8 decoding regression coverage
   - [ ] Domain-held-out and temporal-held-out evaluation
 - [ ] **Establishing strong baseline comparisons** *(not started)*
   - regex-only, majority, TF-IDF+logreg, tree-based, ML-only variants
@@ -101,8 +108,9 @@ Progression: stale model 0.33 → retrained 0.65 → +detector gaps 0.78 →
 - [ ] **Expanding context-aware path intent modeling** *(not started)*
 - [ ] **Testing security reconnaissance usefulness** *(not started)*
 - [x] **Analyzing errors and threats to validity** *(in progress)*
-  - [x] Iteratively fixed: stale weights, random_id gap, asset gap, file gap,
-        encoded/search gap via encoding layer
+  - [x] Fixed decoder corruption, CLI/evaluation divergence, and training
+        leakage in the evaluation harness
+  - [x] Reproduced current error profile (notably weak search recall)
   - [ ] Document limitations, dataset bias, privacy, abstention conditions
 
 ## 4. Reproducibility and release

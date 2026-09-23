@@ -53,7 +53,7 @@ python main.py classify
 | `python main.py detect <path>` | Single path through all 6 detectors + slug classifier |
 | `python main.py scan` | Run all identifier detectors over full dataset |
 | `python main.py stats` | Dataset shape: length, encoding, dash/dot/pure-digit ratios |
-| `python -m unittest tests.test_slugs -v` | 18 integration tests |
+| `python -m unittest discover -v` | Repository test suite |
 
 ## Results
 
@@ -110,6 +110,7 @@ PathKit/
 │   ├── hash/                # Hash scoring
 │   ├── base64/              # Base64/JWT scoring
 │   └── other/               # Catch-all system artifacts
+├── paper/                   # Research positioning and paper notes
 ├── researchs/               # Research docs + experiments
 │   ├── slug.md              # Slug detection research
 │   ├── uuid.md              # UUID detection research
