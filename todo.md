@@ -95,15 +95,20 @@ zero held-out examples, so no claim about API performance is currently valid.
         codes, and 6 credential rows across both inputs; email counts overlap
         credential rows)
   - [ ] A clean, independently-annotated test set (current is development-held-out)
-- [ ] **Creating a human-verified ground-truth set** *(in progress)*
+- [ ] **Creating a human-verified ground-truth set** *(in progress — human-blocked)*
   - [x] Define annotation rules (slug/api/asset/search/random_id/file/encoded)
         -> `data/annotate/guidelines.md`
-  - [x] Sample generator with fixed seed -> `scripts/sample_annotate.py`
-  - [x] 500 paths labeled with first-pass review -> `data/annotate/sample_labeled.csv`
-  - [ ] Add a 2nd annotator + measure inter-annotator agreement
-  - [x] Freeze the test set -> `data/frozen/test_set.csv` + `SHA256SUMS`
-        (hash-verified; but labels are still heuristic-assisted, so a truly
-        clean freeze needs a fresh never-seen-during-development set)
+  - [x] Clean test-set sampler (fresh seed=2026, 600 rows, api/search/encoded
+        oversampled) -> `scripts/sample_clean_test.py`
+  - [x] Clean test set generated -> `data/annotate/clean_test.csv` (label_a/label_b
+        empty, ready for 2 annotators)
+  - [x] Cohen's kappa calculator -> `scripts/agreement.py`
+  - [ ] Annotator 1 fills `label_a` (independent, no PathKit predictions)
+  - [ ] Annotator 2 fills `label_b` (independent)
+  - [ ] Run `scripts/agreement.py` -> measure Cohen's kappa
+  - [ ] Adjudicate disagreements
+  - [ ] Freeze the clean test set (hash + never re-sampled)
+  - Note: the old 500 (`sample_labeled.csv`) remains development-held-out only.
 - [x] **Preventing heuristic label leakage** *(done)*
   - [x] Current development-held-out set excluded from training -> `scripts/retrain_eval.py`
         (trains on 16,418 auto-labeled, evaluates on 500 held-out)
