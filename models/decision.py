@@ -15,8 +15,18 @@ class Classification:
     decoded: str
 
 
-def classify_path(raw: str, model: URLIntentModel) -> Classification:
-    """Apply the production detector priority and return one auditable result."""
+def classify_path(
+    raw: str,
+    model: URLIntentModel,
+    fallback_label: str | None = None,
+) -> Classification:
+    """
+    Apply the production detector priority and return one auditable result.
+
+    If `fallback_label` is provided, it is returned instead of consulting the
+    ML classifier (used by the rule-only baseline to isolate detector
+    contribution from the learned model).
+    """
     decoded = decode(raw)
     path = decoded.split("?", 1)[0]
 
@@ -35,10 +45,8 @@ def classify_path(raw: str, model: URLIntentModel) -> Classification:
     from .timestamp import detect_type as timestamp_type
     from .timestamp import is_hybrid_slug
     from .timestamp import score as timestamp_score
-    from .hash import detect_type as hash_type
     from .hash import is_bundler_chunk, is_hash_embedded
     from .hash import score as hash_score
-    from .base64 import detect_type as base64_type
     from .base64 import score as base64_score
     from .other import classify as other_classify
     from .other import score as other_score
@@ -79,6 +87,9 @@ def classify_path(raw: str, model: URLIntentModel) -> Classification:
     if other_score_value > 0.5:
         label = other_classify(raw) or "random_id"
         return Classification(label, "other", other_score_value, decoded)
+
+    if fallback_label is not None:
+        return Classification(fallback_label, "fallback", 1.0, decoded)
 
     result = model.predict(raw)
     return Classification(

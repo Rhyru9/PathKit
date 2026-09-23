@@ -117,8 +117,13 @@ zero held-out examples, so no claim about API performance is currently valid.
   - [x] Canonical classifier shared by CLI and evaluation -> `models/decision.py`
   - [x] URL/query-safe UTF-8 decoding regression coverage
   - [ ] Domain-held-out and temporal-held-out evaluation
-- [ ] **Establishing strong baseline comparisons** *(not started)*
-  - regex-only, majority, TF-IDF+logreg, tree-based, ML-only variants
+- [x] **Establishing initial baseline comparisons** *(implemented; clean test pending)*
+  - majority, rule-only, ML-only, and hybrid on identical 500-row split
+  - `eval/baselines.py` uses the canonical production labeling/decoding path
+  - Current result: hybrid accuracy `0.9780`, macro-F1 `0.9072`; API remains
+    unsupported because the held-out set has zero API examples
+  - [ ] Add TF-IDF/logistic and tree-based independently supervised baselines
+    after a clean ground-truth split exists
 - [ ] **Running detector and feature ablation studies** *(not started)*
   - Measure contribution of each detector, feature group, post-filter
 - [ ] **Expanding context-aware path intent modeling** *(not started)*

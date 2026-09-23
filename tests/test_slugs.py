@@ -14,6 +14,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from models.slugs import URLIntentModel, extract, run
 from models.decision import classify_path
 from models.encoding import decode
+from eval.baselines import auto_label_pool
+from scripts.retrain_eval import auto_label_paths
 
 
 class TestSlugPipeline(unittest.TestCase):
@@ -175,6 +177,10 @@ class TestDetectors(unittest.TestCase):
         self.assertEqual(
             classify_path("setjen%3D5Fpdspk", model).label, "encoded"
         )
+
+    def test_baseline_uses_canonical_training_labels(self):
+        paths = ["caf%C3%A9", "setjen%3D5Fpdspk", "report.pdf", "12345678-1234"]
+        self.assertEqual(auto_label_pool(paths), auto_label_paths(paths))
 
 
 if __name__ == "__main__":

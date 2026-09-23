@@ -135,3 +135,16 @@ PathKit does **not** claim:
 - [x] Claim boundaries written to prevent overclaiming.
 - [ ] Every hypothesis mapped to a concrete experiment in `eval/` or
       `baselines/` (next phase).
+
+## 8. Initial baseline result
+
+The initial benchmark is implemented in `eval/baselines.py` and evaluates
+majority, rule-only, ML-only, and hybrid variants on the same 500-row
+development-held-out split. With the canonical production labeling and
+decoding protocol, the hybrid system reaches accuracy `0.9760` and macro-F1
+`0.9064`, versus `0.5640` / `0.6828` for rule-only, `0.7060` / `0.4108` for
+ML-only, and `0.3440` / `0.0853` for majority. The key evidence is per-class:
+rule-only scores `0.0` F1 on slug (cannot read content) while ML-only scores
+`0.0` F1 on asset/encoded/random_id (cannot detect identifiers); only the
+hybrid scores high on both. These results are not final paper evidence: the
+split is heuristic-assisted, single-annotator, and has zero API support.
