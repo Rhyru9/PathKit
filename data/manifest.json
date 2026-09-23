@@ -1,0 +1,46 @@
+{
+  "name": "PathKit URL Path Token Dataset",
+  "version": "2.0",
+  "frozen": true,
+  "seed": 42,
+  "hashes": {
+    "data/paths.txt": "463d4d32fe228d0cfd9e731f2f08b2727fcfa789b84a1abb04f14b271e6ef2eb",
+    "data/endpoints.txt": "a7e756494ccb29ac3e869035f0338240650eaa9676c3834567b1a0725e3a7669",
+    "data/annotate/sample_labeled.csv": "1c5ee1ed71ada23979898a491286240e2cd892e4b07e84579e4e74503d1fd96c",
+    "data/frozen/test_set.csv": "1c5ee1ed71ada23979898a491286240e2cd892e4b07e84579e4e74503d1fd96c"
+  },
+  "counts": {
+    "paths": 22583,
+    "endpoints": 447266,
+    "train_pool": 22083
+  },
+  "split": {
+    "train": {
+      "size": 22083,
+      "label": "weak-auto-label (heuristic)",
+      "status": "training-pool",
+      "note": "paths.txt minus held-out; auto-labeled for training only"
+    },
+    "validation": {
+      "size": 0,
+      "label": "none",
+      "status": "not-created",
+      "note": "separate development sample still required before paper"
+    },
+    "test": {
+      "size": 500,
+      "label": "heuristic-assisted-single-annotator",
+      "status": "development-held-out-not-clean",
+      "path": "data/frozen/test_set.csv",
+      "note": "labels were heuristic-assisted and reviewed by 1 annotator;iterated on during detector tuning; NOT a clean independently-annotated test set"
+    }
+  },
+  "reconciliation": {
+    "endpoints": 447266,
+    "unique_segments_in_endpoints": 321060,
+    "paths_in_endpoints": 21343,
+    "paths_not_in_endpoints": 1240,
+    "note": "paths.txt is a curated subset, NOT a pure segment-decomposition of endpoints.txt"
+  },
+  "provenance_confidence": "partial \u2014 exact crawl parameters still to be re-recorded"
+}

@@ -72,26 +72,36 @@ zero held-out examples, so no claim about API performance is currently valid.
   - [x] 7-class taxonomy + decision priority
   - [x] Success metrics (macro-F1 primary, per-class, abstention)
   - [x] Claim boundaries (5 anti-overclaim statements)
-- [ ] **Surveying related work and prior art** *(not started)*
-  - Review URL classification, web crawling, endpoint discovery, semantic URL
-    analysis, identifier detection, and security reconnaissance.
-  - Build a comparison matrix and identify the exact research gap.
+- [x] **Surveying related work and prior art** *(initial matrix done)*
+  - [x] 6-category comparison matrix -> `paper/related-work.md`
+        (URL classification, semantic URL, crawling/discovery, identifier
+        classification, security recon, hybrid rule+ML)
+  - [x] Contribution verdict: hybrid taxonomy + decision pipeline (not a model)
+  - [ ] Verify individual citations (URLNet, URLTran, etc.) against primary sources
 
 ## 2. Dataset and annotation
 
-- [ ] **Curating a reproducible URL path dataset** *(not started)*
-  - Document sources, collection dates, licenses, normalization, deduplication,
-    language distribution, and domain split.
-  - Add versioned manifests and publish only sanitized, permitted data.
+- [ ] **Curating a reproducible URL path dataset** *(in progress — NOT done)*
+  - [x] Source/context/counts/dates/language/domain/dedup -> `paper/dataset.md`
+  - [x] Machine-readable manifest with hashes + reconciliation
+        -> `data/manifest.json` (via `scripts/freeze_dataset.py`)
+  - [x] Reconciled 22,583 paths vs 447,266 endpoints (94.5% overlap)
+  - [x] Stale 230,200 references removed
+  - [ ] Re-record exact crawl parameters (tool version, seed URLs, depth)
+  - [ ] License verification
+  - [ ] PII redaction
+  - [ ] A clean, independently-annotated test set (current is development-held-out)
 - [ ] **Creating a human-verified ground-truth set** *(in progress)*
   - [x] Define annotation rules (slug/api/asset/search/random_id/file/encoded)
         -> `data/annotate/guidelines.md`
   - [x] Sample generator with fixed seed -> `scripts/sample_annotate.py`
   - [x] 500 paths labeled with first-pass review -> `data/annotate/sample_labeled.csv`
   - [ ] Add a 2nd annotator + measure inter-annotator agreement
-  - [ ] Freeze the test set (never used for training)
+  - [x] Freeze the test set -> `data/frozen/test_set.csv` + `SHA256SUMS`
+        (hash-verified; but labels are still heuristic-assisted, so a truly
+        clean freeze needs a fresh never-seen-during-development set)
 - [x] **Preventing heuristic label leakage** *(done)*
-  - [x] Held-out set excluded from training -> `scripts/retrain_eval.py`
+  - [x] Current development-held-out set excluded from training -> `scripts/retrain_eval.py`
         (trains on 16,418 auto-labeled, evaluates on 500 held-out)
 
 ## 3. Evaluation and scientific validation

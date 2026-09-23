@@ -24,7 +24,9 @@ Thumbs.db
 output/
 
 # Data (contains crawled paths)
-data/
+data/*
+!data/frozen/
+data/frozen/test_set.csv
 
 # Research experiment outputs
 researchs/*/output/
@@ -32,3 +34,5 @@ researchs/*/output/
 # JSON exports (except trained weights)
 *.json
 !weights/*.json
+!data/manifest.json
+!data/frozen/SHA256SUMS
