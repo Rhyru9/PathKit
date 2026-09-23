@@ -1,0 +1,13 @@
+{
+  "seed": 2027,
+  "ratio": 0.2,
+  "source": "data/paths.txt",
+  "source_sha256": "463d4d32fe228d0cfd9e731f2f08b2727fcfa789b84a1abb04f14b271e6ef2eb",
+  "held_out_source": "data/annotate/sample_labeled.csv",
+  "candidate_weak_rows": 16581,
+  "validation_rows": 3316,
+  "validation_path_sha256": "12657b4d0dfc1daefe7f14fc7ff18acd9df67fbd858cc26ffa76ee88f4007555",
+  "label_status": "weak-auto-label",
+  "raw_output": "data/validation/weak_validation.csv",
+  "excluded_held_out_rows": 500
+}

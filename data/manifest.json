@@ -22,10 +22,13 @@
       "note": "paths.txt minus held-out; auto-labeled for training only"
     },
     "validation": {
-      "size": 0,
-      "label": "none",
-      "status": "not-created",
-      "note": "separate development sample still required before paper"
+      "size": 3316,
+      "label": "weak-auto-label (heuristic)",
+      "status": "weak-validation-split",
+      "seed": 2027,
+      "ratio": 0.2,
+      "metadata": "data/splits.json",
+      "note": "raw validation CSV is ignored; metadata and source hash are tracked"
     },
     "test": {
       "size": 500,

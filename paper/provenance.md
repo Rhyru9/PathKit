@@ -38,10 +38,11 @@
 
 | Field | Value | Status |
 |---|---|---|
-| **Clean test set** | `data/annotate/clean_test.csv` (600, seed=2026) | ⚠️ unlabeled |
+| **Clean test set** | `data/annotate/clean_test.csv` (600, seed=2026) | ⚠️ labels are heuristic-assisted; no human-independent labels |
+| **Weak validation split** | `data/splits.json` (3,316 rows, seed=2027) | ✅ metadata tracked; raw CSV ignored |
 | **Annotator 1** | ❌ pending | ❌ |
 | **Annotator 2** | ❌ pending | ❌ |
-| **Cohen's κ** | ❌ pending (`scripts/agreement.py`) | ❌ |
+| **Cohen's κ** | ❌ pending (`scripts/agreement.py`); current κ=1.0 is synthetic only | ❌ |
 | **Disagreement adjudication** | ❌ pending | ❌ |
 | **Test freeze** | ❌ pending | ❌ |
 

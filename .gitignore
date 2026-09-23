@@ -35,4 +35,5 @@ researchs/*/output/
 *.json
 !weights/*.json
 !data/manifest.json
+!data/splits.json
 !data/frozen/SHA256SUMS

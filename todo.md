@@ -102,7 +102,8 @@ zero held-out examples, so no claim about API performance is currently valid.
   - [x] Clean test-set sampler (fresh seed=2026, 600 rows, api/search/encoded
         oversampled) -> `scripts/sample_clean_test.py`
   - [x] Clean test set generated -> `data/annotate/clean_test.csv` (heuristic
-        first-pass in `label_a`; `label_b` remains empty)
+        first-pass in `label_a`; automated diagnostic `label_b` is not human
+        ground truth)
   - [x] Cohen's kappa calculator -> `scripts/agreement.py`
   - [ ] Annotator 1 reviews `label_a` first-pass suggestions independently
         (heuristic-assisted; not ground truth and not a substitute for manual
@@ -126,6 +127,8 @@ zero held-out examples, so no claim about API performance is currently valid.
   - [x] Canonical classifier shared by CLI and evaluation -> `models/decision.py`
   - [x] URL/query-safe UTF-8 decoding regression coverage
   - [ ] Domain-held-out and temporal-held-out evaluation
+  - [x] Dedicated weak-label validation metadata -> `data/splits.json`
+        (3,316 rows, seed=2027; raw CSV remains ignored)
 - [x] **Establishing initial baseline comparisons** *(implemented; clean test pending)*
   - majority, rule-only, ML-only, and hybrid on identical 500-row split
   - `eval/baselines.py` uses the canonical production labeling/decoding path
