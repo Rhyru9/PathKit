@@ -5,15 +5,7 @@ labeling.py - Heuristic auto-labeling for self-supervised slug classification.
 import re
 
 from .constants import COMMON_WORDS
-
-
-def _url_decode(raw: str) -> str:
-    """Decode percent-encoded path tokens."""
-    return re.sub(
-        r"%([0-9A-Fa-f]{2})",
-        lambda m: chr(int(m.group(1), 16)),
-        raw.strip(),
-    )
+from models.encoding import decode as encoding_decode
 
 
 def auto_label(raw: str) -> str | None:
@@ -21,7 +13,7 @@ def auto_label(raw: str) -> str | None:
     Heuristically label a raw URL path token.
     Returns None if no confident rule applies (-> used as negative example).
     """
-    decoded = _url_decode(raw)
+    decoded = encoding_decode(raw)
     s = decoded.lower()
 
     # ── Reject: special-char-heavy noise ──
@@ -47,7 +39,7 @@ def auto_label(raw: str) -> str | None:
         return "encoded"
 
     # ── Strong asset signals ──
-    if re.search(r"\.(js|css)$", s) and re.search(r"[a-f0-9]{8,20}", s):
+    if re.search(r"\.(js|css|map)$", s):
         return "asset"
 
     # ── Strong file signals ──

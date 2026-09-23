@@ -19,6 +19,8 @@ from .constants import (
     VOWELS,
 )
 
+from models.encoding import decode as encoding_decode
+
 
 def _entropy(s: str) -> float:
     """Shannon entropy of a string (normalized)."""
@@ -29,18 +31,9 @@ def _entropy(s: str) -> float:
     return -sum((c / L) * math.log2(c / L) for c in freq.values())
 
 
-def _url_decode(raw: str) -> str:
-    """Decode percent-encoded path tokens."""
-    return re.sub(
-        r"%([0-9A-Fa-f]{2})",
-        lambda m: chr(int(m.group(1), 16)),
-        raw.strip(),
-    )
-
-
 def extract(raw: str) -> dict:
     """Extract normalized feature vector from a raw URL path token."""
-    decoded = _url_decode(raw)
+    decoded = encoding_decode(raw)
     s = decoded.lower()
     f: dict = {}
 
@@ -112,6 +105,8 @@ def extract(raw: str) -> dict:
     f["is_file_ext"] = (
         1.0 if re.search(r"\.(js|css|php|html|json|xml|pdf|sql|env|bak)$", s) else 0.0
     )
+    # Static web asset extensions (distinct from document files)
+    f["is_static_asset"] = 1.0 if re.search(r"\.(js|css|map)$", s) else 0.0
     f["is_catalog"] = 1.0 if re.search(r"=3[aA]|=2[eE]", s) else 0.0
     f["has_special"] = 1.0 if re.search(r"[%{}\[\]<>]", s) else 0.0
     f["is_noise"] = (

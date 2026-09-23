@@ -14,18 +14,21 @@ context   : Type detection.
 
 Usage
 -----
-    from models.other import score, detect_type
+    from models.other import score, detect_type, classify
 
     score("ditjen=5Fbudaya=5Fsesditjen=5Fupt26")  # -> 0.8
-    score("PED003.3.4")                            # -> 0.7
-    score("70032380")                              # -> 0.5
-    score("panduan-belajar-online")                # -> 0.0
+    score("P9996589")                             # -> 0.8 (id code)
+    score("PED001.3")                             # -> 0.7 (single-dot)
+    score("vDnPZwVN0j")                           # -> 0.7 (random alnum)
+    score("panduan-belajar-online")               # -> 0.0
+    classify("P9996589")                          # -> "random_id"
 """
 
-from .context import detect_type
+from .context import classify, detect_type
 from .scorer import score
 
 __all__ = [
     "score",
     "detect_type",
+    "classify",
 ]

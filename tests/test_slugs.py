@@ -63,7 +63,7 @@ class TestSlugPipeline(unittest.TestCase):
     def test_4_feature_extraction(self):
         """Feature vector has expected dimensions."""
         feats = extract("panduan-belajar-online")
-        self.assertEqual(len(feats), 23, f"Expected 23 features, got {len(feats)}")
+        self.assertEqual(len(feats), 24, f"Expected 24 features, got {len(feats)}")
         self.assertGreater(feats["readable_count_norm"], 0)
         self.assertEqual(feats["has_dash"], 1.0)
 
