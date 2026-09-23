@@ -1,0 +1,28 @@
+{
+  "artifact": "data/annotate/clean_test.csv",
+  "sha256": "4596458e8665338d8d0175c4b7e5f04851361dc8e8e3cb99323d8ca899ad01bc",
+  "rows": 600,
+  "columns": ["id", "path", "label_a", "label_b", "label_final"],
+  "annotator_agreement": {
+    "labeled_rows": 600,
+    "cohens_kappa": 0.8109,
+    "disagreements": 87,
+    "status": "pre-adjudication"
+  },
+  "adjudication": {
+    "status": "expert-assisted",
+    "label_column": "label_final",
+    "independent_third_annotator": false,
+    "note": "label_a and label_b are preserved; label_final resolves conflicts using endpoint context"
+  },
+  "evaluation": {
+    "training_excludes_clean_paths": true,
+    "hybrid_accuracy": 0.5433,
+    "hybrid_macro_f1": 0.5373,
+    "status": "development evidence; endpoint-domain shift observed"
+  },
+  "release": {
+    "raw_artifact_tracked": false,
+    "reason": "PII and licensing review pending"
+  }
+}

@@ -111,7 +111,9 @@ zero held-out examples, so no claim about API performance is currently valid.
   - [ ] Annotator 2 fills `label_b` (independent)
   - [ ] Run `scripts/agreement.py` -> measure Cohen's kappa
   - [ ] Adjudicate disagreements
-  - [ ] Freeze the clean test set (hash + never re-sampled)
+  - [x] Expert-assisted adjudication stored in `label_final`; pre-adjudication
+        κ=`0.8109`, 87 conflicts; independent third-annotator status not claimed
+  - [x] Freeze metadata/hash -> `data/frozen/clean_test_metadata.json`
   - Note: the old 500 (`sample_labeled.csv`) remains development-held-out only.
 - [x] **Preventing heuristic label leakage** *(done)*
   - [x] Current development-held-out set excluded from training -> `scripts/retrain_eval.py`

@@ -27,6 +27,7 @@ output/
 data/*
 !data/frozen/
 data/frozen/test_set.csv
+!data/frozen/clean_test_metadata.json
 
 # Research experiment outputs
 researchs/*/output/
@@ -37,3 +38,4 @@ researchs/*/output/
 !data/manifest.json
 !data/splits.json
 !data/frozen/SHA256SUMS
+!data/frozen/clean_test_metadata.json

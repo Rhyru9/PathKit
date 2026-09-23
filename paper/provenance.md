@@ -42,9 +42,9 @@
 | **Weak validation split** | `data/splits.json` (3,316 rows, seed=2027) | ✅ metadata tracked; raw CSV ignored |
 | **Annotator 1** | ❌ pending | ❌ |
 | **Annotator 2** | ❌ pending | ❌ |
-| **Cohen's κ** | ❌ pending (`scripts/agreement.py`); current κ=1.0 is synthetic only | ❌ |
-| **Disagreement adjudication** | ❌ pending | ❌ |
-| **Test freeze** | ❌ pending | ❌ |
+| **Cohen's κ** | 0.8109 on 600 pre-adjudication pairs | ✅ diagnostic |
+| **Disagreement adjudication** | 87 conflicts resolved into `label_final` by expert-assisted context rules | ⚠️ not independent third annotator |
+| **Test freeze** | `data/frozen/clean_test_metadata.json` + local SHA-256 | ✅ metadata only |
 
 ## 5. Publication Decision
 

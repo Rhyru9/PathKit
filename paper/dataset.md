@@ -136,6 +136,14 @@ Current protocol (see `scripts/retrain_eval.py`):
       were heuristic-assisted, single-annotator, and iterated on during
       detector tuning. Hash integrity ≠ test-set independence.
 
+The fresh 600-row endpoint sample now has two label columns and an
+expert-assisted `label_final` adjudication. Pre-adjudication agreement is
+Cohen's κ=`0.8109` (87 disagreements). A leakage-safe run that excludes these
+paths from training yields hybrid accuracy `0.5433` and macro-F1 `0.5373`,
+substantially below the token-level development result; this indicates
+endpoint/domain shift and is not a final claim until adjudication and source
+coverage are independently reviewed.
+
 ---
 
 ## 6. Publication & Privacy Assessment
