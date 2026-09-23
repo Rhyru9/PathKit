@@ -135,15 +135,15 @@ Classes:
 ## 7. Classification Pipeline
 
 ```
-paths.txt
+paths.txt (22,583)
     ↓
-load_paths()          → 230,200 raw tokens
+load_paths()          → 22,583 raw tokens
     ↓
-auto_label()          → 222,812 labeled (heuristic)
+auto_label()          → ~16,400 labeled (heuristic)
     ↓
-train(model)          → 178,249 training examples
+train(model)          → ~16,400 training examples
     ↓
-predict(all)          → 230,200 classified
+predict(all)          → 22,583 classified
     ↓
 post-filter           → remove noise patterns
     ↓
@@ -168,19 +168,21 @@ Identifier detectors filter out ~30% of paths before the ML classifier runs, dra
 
 ---
 
-## 9. Dataset Results (230,200 paths)
+## 9. Dataset Results (22,583 paths)
+
+> Note: table below reflects the current 22,583-path dataset. The prior
+> 230,200-path crawl had a different distribution (see `paper/dataset.md`).
 
 | Class | Count | % |
 |---|---|---|
-| file | 133,346 | 57.9% |
-| random_id | 63,585 | 27.6% |
-| slug | 23,847 | 10.4% |
-| encoded | 9,405 | 4.1% |
-| search | 10 | 0.0% |
-| asset | 7 | 0.0% |
-| api | 0 | 0.0% |
+| file | 7,860 | ~48% |
+| slug | 7,438 | ~45% |
+| asset | 1,048 | ~6% |
+| search | 47 | ~0.3% |
+| random_id | 8 | ~0.05% |
+| encoded | 3 | ~0.02% |
 
-**Slugs exported:** 15,897 (post-filtered from 23,847 predictions)
+**Slugs exported:** ~6,710 (post-filtered, high-confidence)
 
 ---
 

@@ -54,8 +54,10 @@ zero held-out examples, so no claim about API performance is currently valid.
 
 - Ground truth labels were produced with heuristic assistance and reviewed by
   only 1 annotator (need a second annotator and agreement measurement).
-- Dataset shrank to 22,583 paths; docs still reference 230,200 (stale).
+- Dataset is 22,583 paths / 447,266 endpoints; provenance is documented in
+  `paper/dataset.md`. Stale 230,200 references removed.
 - Search recall is weak (0.3333) and must be addressed before publication.
+- No held-out `api` examples — API performance is unmeasured, not claimed.
 
 ---
 

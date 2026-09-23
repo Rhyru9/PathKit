@@ -93,7 +93,10 @@ def other_score(s):
 
 ---
 
-## 5. Dataset Findings (230,200 paths)
+## 5. Dataset Findings (prior 230,200-path crawl)
+
+> Note: figures below are from the earlier 230,200-path crawl. The current
+> dataset (22,583 paths) has a different distribution. See `paper/dataset.md`.
 
 | "Other" sub-type | Count |
 |---|---|

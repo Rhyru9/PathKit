@@ -1,0 +1,142 @@
+# PathKit Dataset — Documentation & Protocol
+
+> Reproducibility depends on provenance and split clarity. This document
+> records what is *observed* from the data and flags what is *unknown*
+> (to be completed by the collector).
+
+---
+
+## 1. Source & Context
+
+| Field | Value | Confidence |
+|---|---|---|
+| **Primary source** | `kemendikdasmen.go.id` (Kemendikdasmen — Ministry of Primary & Secondary Education, Indonesia) | observed (357,731 domain hints in `endpoints.txt`) |
+| **Secondary sources** | `kemdikbud.go.id`, `paudpedia.kemdikbud.go.id`, `bekraf.go.id`, `simpkb.id`, `belajar.id`, `bku.ac.id` | observed |
+| **Collection tool** | DIFIND / ReconArchitectAgent (offline extraction mode) | from removed header |
+| **Collection date** | ~2026-06-12 (file mtime) | file metadata |
+| **Language** | Indonesian (dominant), some English | 41.9% of paths contain Indonesian words |
+| **Domain** | Government + education | observed |
+
+> ⚠️ **Provenance to confirm:** exact crawl scope, seed URLs, crawl depth,
+> and collection parameters were in the original DIFIND header (now removed).
+> These must be re-recorded for full reproducibility.
+
+---
+
+## 2. File Inventory & Counts
+
+| File | Lines | Unique | Description |
+|---|---|---|---|
+| `data/paths.txt` | **22,583** | 22,583 (0 dup) | Single path tokens (one segment, no leading `/`) |
+| `data/endpoints.txt` | **447,266** | 447,266 (0 dup) | Full multi-segment paths (leading `/`) |
+| `data/annotate/sample_labeled.csv` | 500 | — | Held-out ground truth (1 annotator) |
+
+> ⚠️ **Stale references:** earlier docs and `flow-system.md` cite 230,200 paths.
+> The correct, current figure is **22,583** (paths) / **447,266** (endpoints).
+> The 230,200 figure referred to a prior, larger crawl and must be removed.
+
+---
+
+## 3. Structural Profile (`data/paths.txt`)
+
+```
+Total:            22,583
+Length:           min=2  max=766  avg=24.9
+Percent-encoded:  553 (2.4%)
+Duplicates:       0
+```
+
+### Top extensions
+
+| Ext | Count |
+|---|---|
+| `.xml` | 4,777 |
+| `.js` | 1,083 |
+| `.html` | 521 |
+| `.txt` | 414 |
+| `.csv` | 338 |
+| `.bib` | 299 |
+| `.rdf` | 297 |
+| `.n3` | 293 |
+| `.enw` | 290 |
+| `.nt` | 290 |
+| `.refer` | 284 |
+| `.ris` | 279 |
+| `.php` | 135 |
+
+> The `.xml/.rdf/.n3/.nt/.ris/.bib/.enw/.refer` cluster indicates **library
+> repository metadata** (likely an OAI-PMH / eprints harvest from
+> `perpustakaankemdikbud`).
+
+### Encoding present
+
+- **URL percent-encoding** (`%XX`): 553 paths (2.4%)
+- **In-path hex encoding** (`=XX`, after url-decode): 433 paths
+- **Base64/JWT** (`eyJ…`): 0 in current data (was present in prior crawl)
+
+---
+
+## 4. Normalization & Deduplication
+
+- All lines are `strip()`-ed; empty lines removed.
+- **No deduplication needed** — both files are already unique (0 duplicates).
+- **No case normalization** — original case preserved (important: `Politik`
+  vs `politik` are distinct tokens in the raw crawl).
+- **No domain stripping** — `endpoints.txt` paths have no `http://` prefix,
+  but some tokens embed domain strings (e.g. `paudpedia.kemdikbud.go.id`).
+
+---
+
+## 5. Train / Validation / Test Split Protocol
+
+Current protocol (see `scripts/retrain_eval.py`):
+
+| Split | Size | Content | Label |
+|---|---|---|---|
+| **Train pool** | 22,083 | `paths.txt` minus held-out | weak labels where available |
+| **Auto-labeled training rows** | 16,418 | subset of train pool | heuristic |
+| **Held-out test** | 500 | `sample_labeled.csv` | heuristic-assisted review (1 annotator) |
+
+**Rules (label-leakage prevention):**
+
+1. The 500 held-out paths are **never** auto-labeled or used in training.
+2. Sampling is deterministic (`seed=42` in `scripts/sample_annotate.py`).
+3. Held-out is stratified across structural buckets (uuid, numeric, file_ext,
+   query, dashed, encoded, other).
+
+**To add (before paper):**
+
+- [ ] A dedicated **validation** split (currently train/eval only — the ML
+      uses an 80/20 internal split inside `pipeline.py`, but the harness's
+      "val" is actually the held-out test).
+- [ ] A **frozen test set** that is never inspected during development
+      (the current 500 has been iterated on during detector tuning).
+
+---
+
+## 6. Publication & Privacy Assessment
+
+| Concern | Status | Action |
+|---|---|---|
+| **Proprietary paths** | Medium | Paths are from a public gov crawl, but contain internal routing codes (`ditjen=5F…`, `setjen…`) and staff names/NIP-like IDs (`P9996589`, `Andina-Rastiningtias`). Sanitize before release. |
+| **PII** | **Present** | Person names + NIP-like identifiers appear in paths (e.g. `30690009814425-Andina-Rastiningtias`). Must be redacted or excluded. |
+| **Credentials/secrets** | Low | No API keys observed, but JWT-looking tokens existed in prior crawl. Re-scan before release. |
+| **Licensing** | Unknown | Crawled public web data; check source terms of use. |
+
+**Recommendation:** publish the *taxonomy + code + methodology + aggregate
+statistics*, but **not** the raw `paths.txt`/`endpoints.txt` unless PII is
+redacted and source terms permit.
+
+---
+
+## 7. Reproduction Checklist
+
+- [x] Document counts (22,583 / 447,266)
+- [x] Document source, language, domain, dedup, normalization
+- [x] Define split protocol (train 22,083 / held-out 500)
+- [x] Flag stale 230,200 references
+- [x] Assess publication/privacy risks
+- [ ] Re-record exact crawl parameters (seed, depth, tool version)
+- [ ] Add a proper validation split
+- [ ] Freeze test set (stop iterating on the current 500)
+- [ ] Redact PII before any release

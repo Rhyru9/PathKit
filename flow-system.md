@@ -153,44 +153,35 @@ URLIntentModel
       bias[class] += lr * error
 ```
 
-## Dataset Profile (230,200 paths)
+## Dataset Profile (22,583 paths / 447,266 endpoints)
+
+> ⚠️ Figures below reflect the **current** dataset (22,583 paths). Earlier
+> documentation cited a prior 230,200-path crawl — that is stale and removed.
 
 ```
-Total:           230,200
-Length:          min=2  max=900  avg=27.4
-Percent-encoded: 17,659 (7.7%)
-Has dash:        106,656 (46.3%)
-Has dot:         57,100 (24.8%)
-Has underscore:  10,123 (4.4%)
-Pure digits:     86,129 (37.4%)
-Short (<20):     99,388 (43.2%)
+Total paths:      22,583 (unique, 0 duplicates)
+Total endpoints: 447,266 (unique, 0 duplicates)
+Length:           min=2  max=766  avg=24.9
+Percent-encoded:  553 (2.4%)
 
-Identifier detector hit rates:
-  uuid:      63,209 (27.5%)  -> random_id
-  timestamp:  3,491 (1.5%)   -> api / search
-  hash:         110 (0.05%)  -> asset / api
-  base64:       927 (0.4%)   -> api
-  other:        277 (0.1%)   -> file
+Identifier detector hit rates (current data):
+  uuid:       ~1,000+  -> random_id
+  timestamp:  ~3,500   -> api / search
+  hash:       ~100     -> asset / api
+  base64:     ~0       -> api
+  other:      ~2,000   -> random_id / file / asset
 
-  Total pre-filtered: ~68,014 (29.5%)
-
-  Remaining for ML:       ~162,186 (70.5%)
-
-ML classification:
-  file:      133,311 (57.9%)
-  random_id:  63,585 (27.6%)
-  slug:       23,862 (10.4%)
-  encoded:     9,405 (4.1%)
-  search:         20 (0.0%)
-  asset:          17 (0.0%)
-  api:             0 (0.0%)
-
-Post-filter:
-  Predicted slugs:  23,862
-  After filters:    15,902 (high confidence)
-  Review queue:        179 (low confidence)
-  Rejected:          7,781 (noise patterns)
+ML classification (auto-labeled training pool, 16,404 examples):
+  file:       7,860
+  slug:       7,438
+  asset:      1,048
+  search:       47
+  random_id:     8
+  encoded:       3
 ```
+
+See `paper/dataset.md` for the authoritative dataset manifest and split
+protocol.
 
 ## Complete Classification Decision Tree
 
