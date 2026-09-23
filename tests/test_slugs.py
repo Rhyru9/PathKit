@@ -182,6 +182,23 @@ class TestDetectors(unittest.TestCase):
         paths = ["caf%C3%A9", "setjen%3D5Fpdspk", "report.pdf", "12345678-1234"]
         self.assertEqual(auto_label_pool(paths), auto_label_paths(paths))
 
+    def test_ablation_rejects_unknown_stage(self):
+        with self.assertRaises(ValueError):
+            classify_path(
+                "panduan-belajar-online",
+                URLIntentModel(),
+                disabled=frozenset({"typo"}),
+            )
+
+    def test_ablation_can_disable_ml_with_fallback(self):
+        result = classify_path(
+            "panduan-belajar-online",
+            URLIntentModel(),
+            fallback_label="slug",
+            disabled=frozenset({"ml"}),
+        )
+        self.assertEqual(result.label, "slug")
+
 
 if __name__ == "__main__":
     unittest.main()

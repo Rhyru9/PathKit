@@ -131,8 +131,15 @@ zero held-out examples, so no claim about API performance is currently valid.
     unsupported because the held-out set has zero API examples
   - [ ] Add TF-IDF/logistic and tree-based independently supervised baselines
     after a clean ground-truth split exists
-- [ ] **Running detector and feature ablation studies** *(not started)*
-  - Measure contribution of each detector, feature group, post-filter
+- [x] **Running initial detector ablation study** *(implemented; clean test pending)*
+  - `eval/ablations.py` measures full hybrid, detector removals, rule-only,
+    and ML-only on the identical development-held-out split.
+  - Full hybrid: accuracy `0.9780`, macro-F1 `0.9072`; removing `other` drops
+    accuracy to `0.7180`, while removing encoding drops macro-F1 to `0.7393`.
+  - UUID/timestamp/hash/Base64 deltas are zero on this split because coverage
+    is inadequate; this is not evidence those detectors are unnecessary.
+  - [ ] Repeat on an independently annotated test set with adequate detector
+    coverage and add feature/runtime ablations.
 - [ ] **Expanding context-aware path intent modeling** *(not started)*
 - [ ] **Testing security reconnaissance usefulness** *(not started)*
 - [x] **Analyzing errors and threats to validity** *(in progress)*

@@ -148,3 +148,15 @@ rule-only scores `0.0` F1 on slug (cannot read content) while ML-only scores
 `0.0` F1 on asset/encoded/random_id (cannot detect identifiers); only the
 hybrid scores high on both. These results are not final paper evidence: the
 split is heuristic-assisted, single-annotator, and has zero API support.
+
+## 9. Initial ablation result
+
+`eval/ablations.py` reuses the canonical decision flow and evaluates detector
+removals on the same development-held-out split. The full hybrid reaches
+accuracy `0.9780` and macro-F1 `0.9072`; removing the `other` detector reduces
+accuracy to `0.7180` and macro-F1 to `0.6629`, while removing the routing
+encoding detector reduces macro-F1 to `0.7393`. Removing UUID, timestamp, or
+hash/Base64 stages produces no change on this split because those token types
+are inadequately represented. These are descriptive development results, not
+causal or final-paper estimates; the ablation must be repeated on a clean,
+independently annotated test set.
