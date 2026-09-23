@@ -22,14 +22,17 @@ def hex_decode(s: str) -> str:
     """
     Decode =XX in-path hex encoding to characters.
 
-    Only decodes when the resulting character is non-alphanumeric (a
-    delimiter such as : . _ =). Query strings are excluded by ``decode``.
+    Only decodes when the resulting character is a known delimiter
+    (: . _ = + / space). This avoids corrupting query values like
+    ``?npsn=10800463`` (where ``=10`` is a value digit pair, not hex).
     """
+    delimiters = set(":._=+/ -")
+
     def _sub(m):
         c = chr(int(m.group(1), 16))
-        if c.isalnum():
-            return m.group(0)  # keep as-is (looks like a value, not encoding)
-        return c
+        if c in delimiters:
+            return c
+        return m.group(0)  # keep as-is (value, not delimiter encoding)
 
     return HEX_ENCODE_RE.sub(_sub, s)
 

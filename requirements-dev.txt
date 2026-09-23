@@ -1,0 +1,10 @@
+# PathKit — development dependencies (for evaluation baselines only)
+#
+# The PathKit core is stdlib-only. These are only needed to run
+# eval/supervised_baselines.py (TF-IDF + Logistic Regression, Decision Tree).
+#
+# Install:
+#   python -m pip install -r requirements-dev.txt
+#   (or: python -m pip install scikit-learn)
+
+scikit-learn>=1.4
