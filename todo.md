@@ -88,8 +88,12 @@ zero held-out examples, so no claim about API performance is currently valid.
   - [x] Reconciled 22,583 paths vs 447,266 endpoints (94.5% overlap)
   - [x] Stale 230,200 references removed
   - [ ] Re-record exact crawl parameters (tool version, seed URLs, depth)
-  - [ ] License verification
-  - [ ] PII redaction
+  - [ ] License verification (blocked — source ToS unknown)
+  - [x] PII audit + documentation -> `paper/pii-audit.md`, `scripts/audit_pii.py`
+  - [x] Sanitization script -> `scripts/sanitize_dataset.py`
+        (produces `data/sanitized/*`; 908 NIP/name candidates, 2,067 ID
+        codes, and 6 credential rows across both inputs; email counts overlap
+        credential rows)
   - [ ] A clean, independently-annotated test set (current is development-held-out)
 - [ ] **Creating a human-verified ground-truth set** *(in progress)*
   - [x] Define annotation rules (slug/api/asset/search/random_id/file/encoded)

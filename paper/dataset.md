@@ -141,8 +141,8 @@ Current protocol (see `scripts/retrain_eval.py`):
 
 | Concern | Status | Action |
 |---|---|---|
-| **Proprietary paths** | Medium | Paths are from a public gov crawl, but contain internal routing codes (`ditjen=5F…`, `setjen…`) and staff names/NIP-like IDs (`P9996589`, `Andina-Rastiningtias`). Sanitize before release. |
-| **PII** | **Present** | Person names + NIP-like identifiers appear in paths (e.g. `30690009814425-Andina-Rastiningtias`). Must be redacted or excluded. |
+| **Proprietary paths** | Medium | Paths are from a public gov crawl, but contain internal routing codes and staff names/NIP-like IDs. Sanitize before release. |
+| **PII** | **Present** | Person names + NIP-like identifiers appear in paths. Must be redacted or excluded. |
 | **Credentials/secrets** | Low | No API keys observed, but JWT-looking tokens existed in prior crawl. Re-scan before release. |
 | **Licensing** | Unknown | Crawled public web data; check source terms of use. |
 
