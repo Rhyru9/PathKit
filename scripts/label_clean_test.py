@@ -8,10 +8,11 @@ independent human annotator must fill `label_b` separately for a valid
 Cohen's kappa.
 
 Usage:
-    python scripts/label_clean_test.py
+    python scripts/label_clean_test.py [--force]
 """
 
 import csv
+import argparse
 import re
 import sys
 from pathlib import Path
@@ -74,12 +75,39 @@ def label(raw: str) -> str:
 
 
 def main() -> int:
-    path = PROJECT_ROOT / "data/annotate/clean_test.csv"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", default="data/annotate/clean_test.csv")
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="replace existing label_a values (never changes label_b)",
+    )
+    args = parser.parse_args()
+    path = PROJECT_ROOT / args.input
+    if not path.exists():
+        print(f"Error: {path} not found.", file=sys.stderr)
+        return 2
+
     with open(path, encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
+    if not rows or not {"id", "path", "label_a", "label_b"} <= set(rows[0]):
+        print("Error: expected columns id,path,label_a,label_b.", file=sys.stderr)
+        return 2
+    existing = [r["id"] for r in rows if (r.get("label_a") or "").strip()]
+    if existing and not args.force:
+        print(
+            f"Error: label_a already contains {len(existing)} values; "
+            "use --force only to intentionally replace them.",
+            file=sys.stderr,
+        )
+        return 2
 
     for r in rows:
-        r["label_a"] = label(r["path"])
+        assigned = label(r["path"])
+        if assigned not in VALID:
+            print(f"Error: invalid generated label for row {r['id']}.", file=sys.stderr)
+            return 2
+        r["label_a"] = assigned
 
     with open(path, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=["id", "path", "label_a", "label_b"])

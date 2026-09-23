@@ -100,10 +100,12 @@ zero held-out examples, so no claim about API performance is currently valid.
         -> `data/annotate/guidelines.md`
   - [x] Clean test-set sampler (fresh seed=2026, 600 rows, api/search/encoded
         oversampled) -> `scripts/sample_clean_test.py`
-  - [x] Clean test set generated -> `data/annotate/clean_test.csv` (label_a/label_b
-        empty, ready for 2 annotators)
+  - [x] Clean test set generated -> `data/annotate/clean_test.csv` (heuristic
+        first-pass in `label_a`; `label_b` remains empty)
   - [x] Cohen's kappa calculator -> `scripts/agreement.py`
-  - [ ] Annotator 1 fills `label_a` (independent, no PathKit predictions)
+  - [ ] Annotator 1 reviews `label_a` first-pass suggestions independently
+        (heuristic-assisted; not ground truth and not a substitute for manual
+        annotation)
   - [ ] Annotator 2 fills `label_b` (independent)
   - [ ] Run `scripts/agreement.py` -> measure Cohen's kappa
   - [ ] Adjudicate disagreements
