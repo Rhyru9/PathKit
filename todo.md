@@ -129,6 +129,9 @@ zero held-out examples, so no claim about API performance is currently valid.
   - [x] Canonical classifier shared by CLI and evaluation -> `models/decision.py`
   - [x] URL/query-safe UTF-8 decoding regression coverage
   - [ ] Domain-held-out and temporal-held-out evaluation
+  - [x] Endpoint control run completed: training on `endpoints.txt` reaches
+        only `0.5867` accuracy / `0.5760` macro-F1 on clean endpoints;
+        endpoint-context modeling is required before any generalization claim.
   - [x] Dedicated weak-label validation metadata -> `data/splits.json`
         (3,316 rows, seed=2027; raw CSV remains ignored)
 - [x] **Establishing initial baseline comparisons** *(implemented; clean test pending)*

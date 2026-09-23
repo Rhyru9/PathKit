@@ -19,7 +19,12 @@
     "training_excludes_clean_paths": true,
     "hybrid_accuracy": 0.5433,
     "hybrid_macro_f1": 0.5373,
-    "status": "development evidence; endpoint-domain shift observed"
+    "endpoint_corpus_control": {
+      "hybrid_accuracy": 0.5867,
+      "hybrid_macro_f1": 0.576,
+      "training_source": "data/endpoints.txt"
+    },
+    "status": "development evidence; endpoint-domain and unit shift observed"
   },
   "release": {
     "raw_artifact_tracked": false,

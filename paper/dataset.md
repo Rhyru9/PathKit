@@ -144,6 +144,12 @@ substantially below the token-level development result; this indicates
 endpoint/domain shift and is not a final claim until adjudication and source
 coverage are independently reviewed.
 
+As a protocol control, training on the full `endpoints.txt` corpus rather than
+the token corpus raises clean-set hybrid performance only to accuracy `0.5867`
+and macro-F1 `0.5760`. Thus the gap is not explained solely by token-versus-
+endpoint input format: weak endpoint labels and missing endpoint-context
+features remain limitations.
+
 ---
 
 ## 6. Publication & Privacy Assessment
