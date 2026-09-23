@@ -12,6 +12,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from models.slugs import URLIntentModel, extract, run
+from models.decision import classify_path
+from models.encoding import decode
 
 
 class TestSlugPipeline(unittest.TestCase):
@@ -157,6 +159,22 @@ class TestDetectors(unittest.TestCase):
         from models.other import score
 
         self.assertEqual(score("panduan-belajar-online"), 0.0)
+
+    def test_decode_preserves_query_values(self):
+        self.assertEqual(decode("/search?page=20"), "/search?page=20")
+
+    def test_decode_supports_utf8(self):
+        self.assertEqual(decode("caf%C3%A9"), "café")
+
+    def test_decode_handles_routing_hex_in_path(self):
+        self.assertEqual(decode("setjen%3D5Fpdspk"), "setjen_pdspk")
+
+    def test_canonical_flow_uses_consistent_labels(self):
+        model = URLIntentModel()
+        self.assertEqual(classify_path("/search?page=20", model).label, "search")
+        self.assertEqual(
+            classify_path("setjen%3D5Fpdspk", model).label, "encoded"
+        )
 
 
 if __name__ == "__main__":

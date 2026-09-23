@@ -29,6 +29,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from models.slugs import URLIntentModel
 from models.slugs.constants import CLASSES
 from models.slugs.labeling import auto_label
+from models.encoding import decode
 
 from eval.harness import evaluate, confusion_matrix, full_system_predict
 
@@ -57,7 +58,7 @@ def auto_label_paths(paths: list[str]) -> list[tuple[str, str]]:
         if label:
             train_data.append((raw, label))
             continue
-        s = re.sub(r"%([0-9A-Fa-f]{2})", lambda m: chr(int(m.group(1), 16)), raw).lower()
+        s = decode(raw).lower()
         if re.match(r"^[0-9a-f]{8}-", s):
             train_data.append((raw, "random_id"))
         elif "-" not in s and len(s) < 15 and not s.isalpha():

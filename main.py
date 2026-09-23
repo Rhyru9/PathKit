@@ -23,6 +23,7 @@ from pathlib import Path
 
 from models.slugs import URLIntentModel
 from models.slugs.pipeline import run as run_slugs
+from models.decision import classify_path
 
 # ── CLI ────────────────────────────────────────────
 
@@ -117,7 +118,9 @@ def _try_import(module_name: str, fn_name: str):
 
 def cmd_detect(a):
     raw = a.path
-    decoded = url_decode(raw)
+    model = URLIntentModel()
+    result = classify_path(raw, model)
+    decoded = result.decoded
 
     print(f"\n  Path: {raw}")
     print(f"  Decoded: {decoded}\n")
@@ -165,15 +168,14 @@ def cmd_detect(a):
     if score_fn:
         s = score_fn(raw)
         t = _try_import("models.other", "detect_type")
+        classify = _try_import("models.other", "classify")
         t_str = t(raw) if t else "-"
-        label = "file" if s > 0.5 else "-"
+        label = classify(raw) if classify and s > 0.5 else "-"
         print(f"  {'other':<12} {s:>6.2f}  {t_str:<14}  -> {label}")
 
-    # Slug classifier
-    model = URLIntentModel()
-    result = model.predict(raw)
     print(
-        f"  {'slug':<12} {'-':>6}  {'-':<14}  -> {result['final']} (conf={result['confidence']:.3f})"
+        f"  {'final':<12} {result.confidence:>6.2f}  {result.detector:<14}"
+        f"  -> {result.label}"
     )
 
 

@@ -8,17 +8,14 @@ Handles the layered encoding seen in the data:
 """
 
 import re
+from urllib.parse import unquote
 
 from .constants import HEX_ENCODE_RE, URL_ENCODE_RE
 
 
 def url_decode(s: str) -> str:
     """Decode %XX percent-encoding to characters."""
-    return re.sub(
-        r"%([0-9A-Fa-f]{2})",
-        lambda m: chr(int(m.group(1), 16)),
-        s,
-    )
+    return unquote(s, encoding="utf-8", errors="replace")
 
 
 def hex_decode(s: str) -> str:
@@ -26,8 +23,7 @@ def hex_decode(s: str) -> str:
     Decode =XX in-path hex encoding to characters.
 
     Only decodes when the resulting character is non-alphanumeric (a
-    delimiter such as : . _ =). This avoids corrupting query-string
-    values like ?page=20 (where "20" is a literal value, not hex).
+    delimiter such as : . _ =). Query strings are excluded by ``decode``.
     """
     def _sub(m):
         c = chr(int(m.group(1), 16))
@@ -38,11 +34,8 @@ def hex_decode(s: str) -> str:
     return HEX_ENCODE_RE.sub(_sub, s)
 
 
-def decode(raw: str, max_layers: int = 5) -> str:
-    """
-    Fully decode a token: apply url_decode -> hex_decode iteratively until
-    the string stops changing (or max_layers is reached).
-    """
+def _decode_path(raw: str, max_layers: int) -> str:
+    """Decode only a path, where ``=XX`` routing escapes are meaningful."""
     s = raw
     for _ in range(max_layers):
         nxt = hex_decode(url_decode(s))
@@ -52,17 +45,30 @@ def decode(raw: str, max_layers: int = 5) -> str:
     return s
 
 
+def decode(raw: str, max_layers: int = 5) -> str:
+    """
+    Fully decode a token: apply url_decode -> hex_decode iteratively until
+    the string stops changing (or max_layers is reached).
+    """
+    path, separator, query = raw.partition("?")
+    decoded_path = _decode_path(path, max_layers)
+    if not separator:
+        return decoded_path
+    return f"{decoded_path}?{url_decode(query)}"
+
+
 def decode_layers(raw: str, max_layers: int = 5) -> list[str]:
     """
     Return the intermediate decoding layers (for debugging / inspection).
     First element is the raw token, last is the fully-decoded form.
     """
     layers = [raw]
-    s = raw
+    path, separator, query = raw.partition("?")
+    s = path
     for _ in range(max_layers):
         nxt = hex_decode(url_decode(s))
         if nxt == s:
             break
-        layers.append(nxt)
+        layers.append(f"{nxt}?{url_decode(query)}" if separator else nxt)
         s = nxt
     return layers

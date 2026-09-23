@@ -15,7 +15,6 @@ import argparse
 import csv
 import json
 import random
-import re
 import sys
 from collections import Counter
 from pathlib import Path
@@ -23,35 +22,9 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+from models.decision import classify_path
 from models.slugs import URLIntentModel
 from models.slugs.constants import CLASSES
-
-# Identifier detector priority order (matches main.py / flow-system.md)
-DETECTORS = [
-    ("uuid", "models.uuid", "score"),
-    ("timestamp", "models.timestamp", "score"),
-    ("hash", "models.hash", "score"),
-    ("base64", "models.base64", "score"),
-    ("other", "models.other", "score"),
-]
-
-# Detector score -> class mapping (threshold > 0.5)
-# NOTE: "other" uses its own classify() for per-type mapping below.
-DETECTOR_CLASS = {
-    "uuid": "random_id",
-    "timestamp": "api",
-    "hash": "asset",
-    "base64": "api",
-}
-
-
-def _import_detector(module: str, fn: str):
-    try:
-        mod = __import__(module, fromlist=[fn])
-        return getattr(mod, fn)
-    except (ImportError, AttributeError):
-        return None
-
 
 def load_annotations(csv_path: Path) -> list[tuple[str, str]]:
     """Load (path, label) pairs from an annotation CSV, skipping empty labels."""
@@ -67,37 +40,7 @@ def load_annotations(csv_path: Path) -> list[tuple[str, str]]:
 
 
 def full_system_predict(raw: str, model: URLIntentModel) -> str:
-    """
-    Production decision order:
-        1. encoding detection (=XX hex delimiter -> encoded)
-        2. search detection (? and = query -> search)
-        3. identifier detectors
-        4. ML slug classifier
-    """
-    url_decode = _import_detector("models.encoding", "url_decode")
-    url_decoded = url_decode(raw) if url_decode else raw
-
-    # 1. Encoded: =XX hex delimiter ( : . _ = ) -> author names, org codes
-    if re.search(r"=(?:3[Aa]|2[Ee]|5[Ff]|3[Dd])", url_decoded):
-        return "encoded"
-
-    # 2. Search: query string with ? and =
-    if "?" in url_decoded and "=" in url_decoded:
-        return "search"
-
-    # 3. Identifier detectors
-    for name, module, fn in DETECTORS:
-        score_fn = _import_detector(module, fn)
-        if score_fn and score_fn(raw) > 0.5:
-            if name == "other":
-                # "other" catches heterogeneous artifacts -> use its classify()
-                cls_fn = _import_detector(module, "classify")
-                if cls_fn:
-                    return cls_fn(raw) or "random_id"
-            return DETECTOR_CLASS[name]
-
-    # 4. ML slug classifier
-    return model.predict(raw)["final"]
+    return classify_path(raw, model).label
 
 
 def ml_predict(raw: str, model: URLIntentModel) -> str:
@@ -214,12 +157,12 @@ def main() -> None:
         print(f"Error: annotations not found: {ann_path}")
         print("Generate a sample first: python scripts/sample_annotate.py")
         print("Then fill the 'label' column per data/annotate/guidelines.md")
-        return
+        raise SystemExit(2)
 
     rows = load_annotations(ann_path)
     if not rows:
         print("Error: no labeled rows found. Fill the 'label' column first.")
-        return
+        raise SystemExit(2)
 
     print(f"Loaded {len(rows)} annotated paths")
 
@@ -227,13 +170,18 @@ def main() -> None:
     train_rows, val_rows = split(rows, args.seed, args.val_ratio)
     print(f"Train: {len(train_rows)}  Val: {len(val_rows)}  (seed={args.seed})")
 
-    # Load model (pre-trained weights; training re-uses full pipeline)
+    # Train a fresh model only on the training partition.
     model = URLIntentModel()
-    if Path(PROJECT_ROOT / args.weights).exists():
-        model.load(PROJECT_ROOT / args.weights)
-        print(f"Loaded weights: {args.weights}")
-    else:
-        print(f"Warning: weights not found ({args.weights}) — using untrained model")
+    unknown = sorted({label for _, label in train_rows} - set(CLASSES))
+    if unknown:
+        raise ValueError(f"Unknown labels in annotations: {', '.join(unknown)}")
+    rng = random.Random(args.seed)
+    rng.shuffle(train_rows)
+    for path, label in train_rows:
+        model.train(path, label)
+    if args.weights:
+        print(f"Evaluation model trained from {len(train_rows)} labeled rows; "
+              f"--weights is ignored for leakage safety")
 
     # Evaluate on held-out val set
     y_true = [label for _, label in val_rows]
